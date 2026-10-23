@@ -1,6 +1,6 @@
 [package]
 name = "missiondeck"
-version = "0.1.0"
+version = "1.0.1"
 description = "本地任务工作台 · Tauri + Vue3 + SQLite"
 authors = ["MissionDeck"]
 edition = "2021"

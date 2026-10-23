@@ -18,7 +18,7 @@ const wb = useWorkbench();
 
 // —— 版本与基础信息 ——
 const appName = ref("任务工作台");
-const appVersion = ref("0.1.0");
+const appVersion = ref("1.0.1");
 const appIdentifier = ref("com.missiondeck.taskbench");
 const dbPath = ref("本地 SQLite · tasks.db");
 const taskCount = ref(0);

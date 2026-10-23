@@ -1,7 +1,7 @@
 {
   "name": "missiondeck",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "本地任务工作台 · Tauri + Vue3 + SQLite 纯本地单机工具",
   "scripts": {

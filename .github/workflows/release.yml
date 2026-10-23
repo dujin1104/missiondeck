@@ -42,10 +42,13 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "任务工作台 ${{ github.ref_name }}"
           releaseBody: |
-            本地任务工作台安装包。
+            本地任务工作台安装包，选择对应平台的附件下载：
 
-            - 任务工作台_x.x.x_x64-setup.exe：Windows 安装包（NSIS）
-            - 任务工作台_x.x.x_x64.dmg：macOS 安装包（Intel + Apple Silicon 通用）
+            - Windows：`*-setup.exe`（NSIS 安装包）
+            - macOS（Apple Silicon）：`*_aarch64.dmg`
+            - macOS（Intel / 通用）：`*_x64.dmg` 或 `*_universal.dmg`
+
+            纯本地单机工具，数据仅保存在本机。未做代码签名，macOS 首次打开若被 Gatekeeper 拦截，请右键 App 选择「打开」。
           releaseDraft: true
           prerelease: false
           # 仅打 NSIS：中文产品名在 WiX(MSI) 下会因代码页 1252 报错
