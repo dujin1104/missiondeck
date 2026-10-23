@@ -44,12 +44,12 @@ jobs:
           releaseBody: |
             本地任务工作台安装包。
 
-            - 任务工作台_x64-setup.exe：Windows NSIS 安装包（推荐）
-            - 任务工作台_x64_en-US.msi：Windows MSI 安装包
-            - 任务工作台_x64.dmg：macOS 安装包（Intel + Apple Silicon 通用）
+            - 任务工作台_x.x.x_x64-setup.exe：Windows 安装包（NSIS）
+            - 任务工作台_x.x.x_x64.dmg：macOS 安装包（Intel + Apple Silicon 通用）
           releaseDraft: true
           prerelease: false
-          args: "--target x86_64-pc-windows-msvc"
+          # 仅打 NSIS：中文产品名在 WiX(MSI) 下会因代码页 1252 报错
+          args: "--target x86_64-pc-windows-msvc --bundles nsis"
 
   build-macos:
     name: Build macOS installer
