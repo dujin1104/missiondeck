@@ -1,0 +1,165 @@
+:root {
+  /* 背景与面板：更轻的暖白，弱化米色，强调留白 */
+  --bg: #f6f5f2;
+  --panel: #ffffff;
+  --panel-soft: #fbfaf8;
+  --border: #ece8e1;
+  --border-strong: #ddd8cf;
+
+  /* 文字：近黑墨水色 + 两级灰 */
+  --text: #1f1e1c;
+  --text-2: #6b6862;
+  --text-3: #a39e95;
+
+  /* 状态配色（低饱和商务风，保持原规范） */
+  --c-todo: #9aa0a6; /* 待开始 灰 */
+  --c-doing: #2f6fed; /* 进行中 蓝 */
+  --c-done: #2e9e5b; /* 已完成 绿 */
+  --c-over: #c77b43; /* 已延期 橙棕 */
+  --c-over-red: #d9534f; /* 逾期红条 */
+
+  --radius: 12px;
+  --radius-sm: 9px;
+  --shadow-sm: 0 1px 2px rgba(40, 35, 25, 0.05);
+  --shadow-md: 0 4px 16px rgba(40, 35, 25, 0.07);
+
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-thumb {
+  background: #dad4ca;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 标签 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  line-height: 1;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.prio {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #f1eee8;
+  color: var(--text-2);
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 7px 13px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.btn:hover {
+  background: #f3efe9;
+}
+.btn-primary {
+  background: var(--c-doing);
+  border-color: var(--c-doing);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #2a63d6;
+}
+.btn-danger {
+  border-color: #e7c4b4;
+  color: #b9532f;
+  background: #fdf6f2;
+}
+.btn-danger:hover {
+  background: #fbeee7;
+}
+.btn-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-2);
+  padding: 6px 8px;
+}
+.btn-ghost:hover {
+  background: #ece8e1;
+  color: var(--text);
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-2);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.icon-btn:hover {
+  background: #ece8e1;
+  color: var(--text);
+}
+.icon-btn:disabled,
+.icon-btn:disabled:hover {
+  opacity: 0.35;
+  background: transparent;
+  color: var(--text-3);
+  cursor: default;
+}

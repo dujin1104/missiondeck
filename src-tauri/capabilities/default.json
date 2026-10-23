@@ -1,0 +1,12 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "任务工作台默认权限：本地 SQLite 读写 + 应用数据目录",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:path:default",
+    "sql:default",
+    "sql:allow-execute"
+  ]
+}
