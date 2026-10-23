@@ -201,4 +201,6 @@ src-tauri/target/release/bundle/
 
 ## License
 
-MIT（或按实际项目协议补充）。
+本项目基于 **MIT License** 开源，详见 [LICENSE](./LICENSE)。
+
+Copyright (c) 2026 渡江河
