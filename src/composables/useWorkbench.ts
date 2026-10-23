@@ -143,6 +143,18 @@ const dayCounts = computed<Record<string, number>>(() => {
   return map;
 });
 
+// 当日任务弹窗（月/周视图点某天时展示）
+const dayModalIso = ref<string | null>(null);
+
+function openDay(d: Date) {
+  const iso = toISO(d);
+  selectedDay.value = iso;
+  dayModalIso.value = iso;
+}
+function closeDay() {
+  dayModalIso.value = null;
+}
+
 function setFilter(f: StatusFilter) {
   statusFilter.value = f;
 }
@@ -169,6 +181,9 @@ export function useWorkbench() {
     setFilter,
     setSelectedDay,
     clearSelectedDay,
+    dayModalIso,
+    openDay,
+    closeDay,
     // 周期
     periodStart,
     periodEnd,

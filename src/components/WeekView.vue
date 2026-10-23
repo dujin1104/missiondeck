@@ -17,9 +17,6 @@ function colClass(d: Date): Record<string, boolean> {
     selected: wb.selectedDay.value === toISO(d),
   };
 }
-function selectDay(d: Date) {
-  wb.setSelectedDay(toISO(d));
-}
 </script>
 
 <template>
@@ -32,7 +29,7 @@ function selectDay(d: Date) {
           class="day-col"
           :class="colClass(d)"
         >
-          <div class="day-head" @click="selectDay(d)">
+          <div class="day-head" @click="wb.openDay(d)">
             <span class="wd-cn">{{ WEEKDAY_CN[i] }}</span>
             <span class="wd-date">{{ d.getDate() }}</span>
             <span v-if="isToday(d)" class="today-tag">今天</span>

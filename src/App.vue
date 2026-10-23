@@ -9,6 +9,7 @@ import WeekView from "./components/WeekView.vue";
 import MonthView from "./components/MonthView.vue";
 import InfoPanel from "./components/InfoPanel.vue";
 import TaskDialog from "./components/TaskDialog.vue";
+import TaskDayModal from "./components/TaskDayModal.vue";
 import SettingsModal from "./components/SettingsModal.vue";
 import type { Task } from "./types";
 
@@ -135,6 +136,14 @@ function endDrag() {
         @close="closeDialog"
         @save="onSave"
         @remove="onRemove"
+      />
+
+      <TaskDayModal
+        :show="!!wb.dayModalIso.value"
+        :iso="wb.dayModalIso.value || ''"
+        @close="wb.closeDay()"
+        @edit="openEdit"
+        @create="openCreate"
       />
 
       <SettingsModal :show="showSettings" @close="showSettings = false" />

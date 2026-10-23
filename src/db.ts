@@ -234,9 +234,9 @@ async function seedIfEmpty(): Promise<void> {
 /** 解析数据库实际落盘路径（应用数据目录）用于界面展示 */
 export async function getDbDisplayPath(): Promise<string> {
   try {
-    const { appDataDir } = await import("@tauri-apps/api/path");
+    const { appDataDir, join } = await import("@tauri-apps/api/path");
     const dir = await appDataDir();
-    return `${dir}tasks.db`;
+    return await join(dir, "tasks.db");
   } catch {
     return "本地 SQLite · tasks.db";
   }

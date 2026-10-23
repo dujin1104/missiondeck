@@ -56,7 +56,6 @@ function drillToWeek(monday: Date) {
     <div class="block">
       <div class="block-head">
         <span class="section-title">{{ cal.isWeek.value ? "本周" : "本月周次" }}</span>
-        <span v-if="cal.isMonth.value" class="block-hint">点击进入周视图</span>
       </div>
 
       <ul v-if="cal.isWeek.value" class="day-list">
@@ -174,10 +173,6 @@ function drillToWeek(monday: Date) {
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
-}
-.block-hint {
-  font-size: 10px;
-  color: var(--text-3);
 }
 .day-list,
 .week-list {

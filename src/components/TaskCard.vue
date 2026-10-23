@@ -10,7 +10,7 @@ import {
 } from "../utils/task";
 import CompleteButton from "./CompleteButton.vue";
 
-const props = defineProps<{ task: Task }>();
+const props = defineProps<{ task: Task; compact?: boolean }>();
 const emit = defineEmits<{ (e: "open", t: Task): void }>();
 
 const eff = computed(() => effectiveStatus(props.task));
@@ -22,28 +22,45 @@ const accent = computed(() => (isOverdue.value ? "#d9534f" : STATUS_COLOR[eff.va
 <template>
   <div
     class="card"
-    :class="{ overdue: isOverdue, done: eff === '已完成' }"
+    :class="{ overdue: isOverdue, done: eff === '已完成', compact }"
     :style="{ borderLeftColor: accent }"
     @click="emit('open', task)"
   >
-    <CompleteButton :task="task" />
+    <CompleteButton :task="task" :compact="compact" />
     <div class="card-body">
-      <div class="card-top">
-        <span class="status">
+      <template v-if="compact">
+        <div class="row-main">
           <span class="dot" :style="{ background: STATUS_COLOR[eff] }"></span>
-          {{ eff }}
-        </span>
-        <span class="prio" :style="{ color: PRIORITY_COLOR[task.priority] }">
-          {{ task.priority }}
-        </span>
-      </div>
+          <span class="card-title" :title="task.title">{{ task.title }}</span>
+          <span class="prio" :style="{ color: PRIORITY_COLOR[task.priority] }">
+            {{ task.priority }}
+          </span>
+        </div>
+        <div class="row-sub">
+          <span class="status-text">{{ eff }}</span>
+          <span class="sep">·</span>
+          <span class="range">{{ compactRange(task) }}</span>
+          <span v-if="isOverdue" class="delay">逾期 {{ delayDays }} 天</span>
+        </div>
+      </template>
+      <template v-else>
+        <div class="card-top">
+          <span class="status">
+            <span class="dot" :style="{ background: STATUS_COLOR[eff] }"></span>
+            {{ eff }}
+          </span>
+          <span class="prio" :style="{ color: PRIORITY_COLOR[task.priority] }">
+            {{ task.priority }}
+          </span>
+        </div>
 
-      <div class="card-title" :title="task.title">{{ task.title }}</div>
+        <div class="card-title" :title="task.title">{{ task.title }}</div>
 
-      <div class="card-meta">
-        <span class="range">{{ compactRange(task) }}</span>
-        <span v-if="isOverdue" class="delay">逾期 {{ delayDays }} 天</span>
-      </div>
+        <div class="card-meta">
+          <span class="range">{{ compactRange(task) }}</span>
+          <span v-if="isOverdue" class="delay">逾期 {{ delayDays }} 天</span>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -139,5 +156,48 @@ const accent = computed(() => (isOverdue.value ? "#d9534f" : STATUS_COLOR[eff.va
   color: #d9534f;
   white-space: nowrap;
   flex: none;
+}
+
+/* —— 紧凑模式（当日弹窗等密集场景） —— */
+.card.compact {
+  padding: 7px 10px;
+  gap: 7px;
+}
+.row-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.row-main .card-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.row-sub {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 1px;
+  font-size: 11px;
+  color: var(--text-3);
+  min-width: 0;
+}
+.row-sub .status-text {
+  font-weight: 600;
+  color: var(--text-2);
+  flex: none;
+}
+.row-sub .sep {
+  color: var(--text-3);
+  flex: none;
+}
+.row-sub .range {
+  flex: 1;
+  min-width: 0;
+}
+.row-sub .delay {
+  margin-left: auto;
 }
 </style>

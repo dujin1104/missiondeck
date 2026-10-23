@@ -15,14 +15,6 @@ const cal = useCalendar();
 function tasksOf(d: Date): Task[] {
   return wb.dayTasks.value[toISO(d)] || [];
 }
-function selectDay(d: Date) {
-  wb.setSelectedDay(toISO(d));
-}
-function drill(d: Date) {
-  wb.setSelectedDay(toISO(d));
-  cal.setMode("week");
-  cal.setAnchor(d);
-}
 </script>
 
 <template>
@@ -42,7 +34,7 @@ function drill(d: Date) {
             today: !cell.blank && isToday(cell.date),
             selected: !cell.blank && wb.selectedDay.value === cell.iso,
           }"
-          @click="!cell.blank && selectDay(cell.date)"
+          @click="!cell.blank && wb.openDay(cell.date)"
         >
           <template v-if="!cell.blank">
             <div class="cell-head">
@@ -58,6 +50,7 @@ function drill(d: Date) {
                 v-for="t in tasksOf(cell.date).slice(0, 3)"
                 :key="t.id"
                 class="chip"
+                :class="{ done: effectiveStatus(t) === '已完成' }"
                 @click.stop="emit('edit', t)"
               >
                 <CompleteButton :task="t" compact />
@@ -70,7 +63,7 @@ function drill(d: Date) {
               <button
                 v-if="tasksOf(cell.date).length > 3"
                 class="more"
-                @click.stop="drill(cell.date)"
+                @click.stop="wb.openDay(cell.date)"
               >
                 还有 {{ tasksOf(cell.date).length - 3 }} 项
               </button>
@@ -207,6 +200,13 @@ function drill(d: Date) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.chip.done {
+  background: #f5f6f4;
+}
+.chip.done .chip-title {
+  color: var(--text-3);
+  text-decoration: line-through;
 }
 .more {
   border: none;
