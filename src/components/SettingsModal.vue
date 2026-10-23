@@ -18,7 +18,7 @@ const wb = useWorkbench();
 
 // —— 版本与基础信息 ——
 const appName = ref("任务工作台");
-const appVersion = ref("1.0.1");
+const appVersion = ref("1.0.2");
 const appIdentifier = ref("com.missiondeck.taskbench");
 const dbPath = ref("本地 SQLite · tasks.db");
 const taskCount = ref(0);
@@ -320,6 +320,39 @@ function cancelImport() {
   importFile.value = null;
   if (fileInput.value) fileInput.value.value = "";
 }
+
+// —— 清空全部数据 ——
+const clearConfirm = ref(false);
+const clearing = ref(false);
+const clearMsg = ref("");
+
+function askClear() {
+  if (taskCount.value === 0) {
+    clearMsg.value = "当前没有任务数据，无需清空。";
+    return;
+  }
+  clearMsg.value = "";
+  clearConfirm.value = true;
+}
+
+async function doClear() {
+  clearing.value = true;
+  try {
+    await clearAllTasks();
+    await wb.reload();
+    taskCount.value = await countAllTasks();
+    clearMsg.value = "已清空全部任务数据。";
+    clearConfirm.value = false;
+  } catch (e) {
+    clearMsg.value = `清空失败：${String(e)}`;
+  } finally {
+    clearing.value = false;
+  }
+}
+
+function cancelClear() {
+  clearConfirm.value = false;
+}
 </script>
 
 <template>
@@ -344,7 +377,6 @@ function cancelImport() {
               <span class="k">应用名称</span><span class="v">{{ appName }}</span>
               <span class="k">当前版本</span><span class="v">{{ appVersion }}</span>
               <span class="k">应用标识</span><span class="v">{{ appIdentifier }}</span>
-              <span class="k">任务总数</span><span class="v">{{ taskCount }}</span>
               <span class="k">数据存储</span><span class="v mono">{{ dbPath }}</span>
             </div>
             <div class="hint">
@@ -433,7 +465,44 @@ function cancelImport() {
             </div>
           </section>
 
-          <div v-if="exportMsg || importMsg" class="msg">{{ exportMsg || importMsg }}</div>
+          <!-- 数据清空 -->
+          <section class="block">
+            <div class="block-title">数据清空</div>
+            <div class="hint">
+              将删除本机数据库中所有任务（不可恢复）。如需要，请先通过上方「导出备份」保存数据。
+            </div>
+            <div class="actions">
+              <button
+                class="btn btn-danger"
+                :disabled="clearConfirm || clearing"
+                @click="askClear"
+              >
+                <Icon name="trash-2" :size="16" /> 清空全部数据
+              </button>
+            </div>
+
+            <div v-if="clearConfirm" class="confirm-box confirm-danger">
+              <div class="confirm-text">
+                确定要清空全部 <b>{{ taskCount }}</b> 条任务吗？此操作不可恢复。
+              </div>
+              <div class="actions">
+                <button
+                  class="btn btn-danger"
+                  :disabled="clearing"
+                  @click="doClear"
+                >
+                  {{ clearing ? "清空中…" : "确认清空" }}
+                </button>
+                <button class="btn btn-ghost" :disabled="clearing" @click="cancelClear">
+                  取消
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <div v-if="exportMsg || importMsg || clearMsg" class="msg">
+            {{ exportMsg || importMsg || clearMsg }}
+          </div>
         </div>
       </div>
     </div>
@@ -561,6 +630,16 @@ function cancelImport() {
 }
 .confirm-text b {
   color: #b9532f;
+}
+.confirm-danger {
+  background: #fef2f2;
+  border-color: #f4c9c9;
+}
+.confirm-danger .confirm-text {
+  color: #a13b3b;
+}
+.confirm-danger .confirm-text b {
+  color: #c0392b;
 }
 .seg-inline {
   margin: 6px 0 2px;

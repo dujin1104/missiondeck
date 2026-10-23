@@ -4,7 +4,6 @@
 
 import Database from "@tauri-apps/plugin-sql";
 import type { Task, TaskStatus, TaskPriority } from "./types";
-import { toISO, addDays, startOfWeek, weekDays } from "./utils/date";
 
 let db: Database | null = null;
 
@@ -21,7 +20,6 @@ export async function initDb(): Promise<void> {
       remark TEXT
     );
   `);
-  await seedIfEmpty();
 }
 
 export function getDb(): Database {
@@ -120,115 +118,6 @@ export function sanitizeImportedTasks(input: unknown): Task[] {
     });
   }
   return out;
-}
-
-/** 首次启动填充示例数据，避免空工作台；之后使用真实数据 */
-async function seedIfEmpty(): Promise<void> {
-  const c = await countTasks();
-  if (c > 0) return;
-
-  const today = new Date();
-  const mon = startOfWeek(today);
-  const days = weekDays(today);
-
-  const samples: Task[] = [
-    {
-      id: crypto.randomUUID(),
-      title: "需求评审会议纪要整理",
-      status: "已完成",
-      priority: "中",
-      start_date: toISO(addDays(mon, 0)),
-      end_date: toISO(addDays(mon, 0)),
-      remark: "同步给产品与研发",
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "周报数据看板上线联调",
-      status: "进行中",
-      priority: "高",
-      start_date: toISO(addDays(mon, 1)),
-      end_date: toISO(addDays(mon, 3)),
-      remark: "前后端接口对齐",
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "客户合同终稿确认",
-      status: "待开始",
-      priority: "中",
-      start_date: toISO(addDays(mon, 2)),
-      end_date: toISO(addDays(mon, 2)),
-      remark: "",
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "竞品功能拆解报告",
-      status: "进行中",
-      priority: "低",
-      start_date: toISO(addDays(mon, 3)),
-      end_date: toISO(addDays(mon, 4)),
-      remark: "",
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "季度复盘材料准备",
-      status: "待开始",
-      priority: "高",
-      start_date: toISO(addDays(mon, 4)),
-      end_date: toISO(addDays(mon, 5)),
-      remark: "需要财务数据支持",
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "线上故障复盘",
-      status: "已完成",
-      priority: "高",
-      start_date: toISO(addDays(mon, 5)),
-      end_date: toISO(addDays(mon, 5)),
-      remark: "",
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "下季度规划草案",
-      status: "待开始",
-      priority: "中",
-      start_date: toISO(addDays(mon, 6)),
-      end_date: toISO(addDays(days[6], 0)),
-      remark: "",
-    },
-    // 故意制造一个逾期任务（截止日早于今天）
-    {
-      id: crypto.randomUUID(),
-      title: "发票报销提交（已逾期）",
-      status: "进行中",
-      priority: "高",
-      start_date: toISO(addDays(today, -5)),
-      end_date: toISO(addDays(today, -2)),
-      remark: "财务催办",
-    },
-    // 跨期任务：本周有排期，截止日不在本周
-    {
-      id: crypto.randomUUID(),
-      title: "年度预算编制（跨期）",
-      status: "进行中",
-      priority: "高",
-      start_date: toISO(addDays(mon, 2)),
-      end_date: toISO(addDays(mon, 9)),
-      remark: "跨多周进行",
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "供应商资质审核（跨期）",
-      status: "待开始",
-      priority: "中",
-      start_date: toISO(addDays(mon, 4)),
-      end_date: toISO(addDays(mon, 12)),
-      remark: "",
-    },
-  ];
-
-  for (const s of samples) {
-    await insertTask(s);
-  }
 }
 
 /** 解析数据库实际落盘路径（应用数据目录）用于界面展示 */
