@@ -9,12 +9,14 @@ import WeekView from "./components/WeekView.vue";
 import MonthView from "./components/MonthView.vue";
 import InfoPanel from "./components/InfoPanel.vue";
 import TaskDialog from "./components/TaskDialog.vue";
+import SettingsModal from "./components/SettingsModal.vue";
 import type { Task } from "./types";
 
 const wb = useWorkbench();
 const cal = useCalendar();
 const ready = ref(false);
 const bootError = ref("");
+const dbUnavailable = ref(false);
 
 const leftCollapsed = ref(false);
 const rightCollapsed = ref(true);
@@ -22,6 +24,7 @@ const rightCollapsed = ref(true);
 const showDialog = ref(false);
 const editingTask = ref<Task | null>(null);
 const defaultDate = ref<string | undefined>(undefined);
+const showSettings = ref(false);
 
 async function boot() {
   try {
@@ -29,7 +32,10 @@ async function boot() {
     await wb.reload();
     ready.value = true;
   } catch (e) {
+    // 非 Tauri 环境（纯浏览器预览）下数据库不可用：仍渲染界面，便于查看 UI
     bootError.value = String(e);
+    dbUnavailable.value = true;
+    ready.value = true;
   }
 }
 onMounted(boot);
@@ -95,6 +101,10 @@ function endDrag() {
     </div>
 
     <template v-else>
+      <div v-if="dbUnavailable" class="db-warn">
+        当前为浏览器预览模式，本地数据库不可用（需在 Tauri 桌面壳内运行才能读写数据）；界面与设置入口可正常查看。
+      </div>
+
       <aside v-show="!leftCollapsed" class="col left" :style="{ width: leftWidth + 'px' }">
         <Sidebar @collapse="leftCollapsed = true" />
       </aside>
@@ -107,6 +117,7 @@ function endDrag() {
           @create="openCreate()"
           @toggle-left="leftCollapsed = !leftCollapsed"
           @toggle-right="rightCollapsed = !rightCollapsed"
+          @open-settings="showSettings = true"
         />
         <WeekView v-if="cal.isWeek.value" @edit="openEdit" />
         <MonthView v-else @edit="openEdit" />
@@ -125,6 +136,8 @@ function endDrag() {
         @save="onSave"
         @remove="onRemove"
       />
+
+      <SettingsModal :show="showSettings" @close="showSettings = false" />
     </template>
   </div>
 </template>
@@ -168,5 +181,14 @@ function endDrag() {
   color: var(--c-over-red);
   max-width: 480px;
   padding: 20px;
+}
+.db-warn {
+  flex: none;
+  padding: 9px 22px;
+  background: #fff7ed;
+  border-bottom: 1px solid #f0d9c4;
+  color: #b9532f;
+  font-size: 12.5px;
+  line-height: 1.5;
 }
 </style>

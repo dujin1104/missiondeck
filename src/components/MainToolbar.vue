@@ -10,6 +10,7 @@ const emit = defineEmits<{
   (e: "create"): void;
   (e: "toggle-left"): void;
   (e: "toggle-right"): void;
+  (e: "open-settings"): void;
 }>();
 
 const cal = useCalendar();
@@ -191,6 +192,10 @@ function pickWeekRow(monday: Date) {
         @click="emit('toggle-right')"
       >
         <Icon name="panel-right" :size="18" />
+      </button>
+
+      <button class="icon-btn" title="设置" @click="emit('open-settings')">
+        <Icon name="settings" :size="18" />
       </button>
     </div>
   </header>
